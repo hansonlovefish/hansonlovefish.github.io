@@ -1,0 +1,195 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FTP工具搭建 | Hanson Blog</title><meta name="author" content="Hanson Zhou"><meta name="copyright" content="Hanson Zhou"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="我们在工作中经常使用到ftp服务器。包括我们的server-u服务器，但是我们的server-u是收费软件，如果公司对软件版权问题比较注重的话，不建议使用server-u，特别是如果公司有安装了server2008的话，我们就可以使用server2008子代的IIS工具来搭建我们的ftp服务器。今天我们就来一步一步搭建我们的ftp服务器。 1、环境要求。 安装有windows server 200">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FTP工具搭建">
+<meta property="og:url" content="http://example.com/2021/09/13/FTP%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="Hanson Blog">
+<meta property="og:description" content="我们在工作中经常使用到ftp服务器。包括我们的server-u服务器，但是我们的server-u是收费软件，如果公司对软件版权问题比较注重的话，不建议使用server-u，特别是如果公司有安装了server2008的话，我们就可以使用server2008子代的IIS工具来搭建我们的ftp服务器。今天我们就来一步一步搭建我们的ftp服务器。 1、环境要求。 安装有windows server 200">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2021-09-13T02:33:04.000Z">
+<meta property="article:modified_time" content="2021-09-13T02:59:47.539Z">
+<meta property="article:author" content="Hanson Zhou">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2021/09/13/FTP%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'FTP工具搭建',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2021-09-13 10:59:47'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">19</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">9</div></a></div></div></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Hanson Blog</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">FTP工具搭建</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2021-09-13T02:33:04.000Z" title="Created 2021-09-13 10:33:04">2021-09-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2021-09-13T02:59:47.539Z" title="Updated 2021-09-13 10:59:47">2021-09-13</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="FTP工具搭建"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>我们在工作中经常使用到ftp服务器。包括我们的server-u服务器，但是我们的server-u是收费软件，如果公司对软件版权问题比较注重的话，不建议使用server-u，特别是如果公司有安装了server2008的话，我们就可以使用server2008子代的IIS工具来搭建我们的ftp服务器。今天我们就来一步一步搭建我们的ftp服务器。</p>
+<p>1、环境要求。</p>
+<p>安装有windows server 2008或者其他服务器版本的window操作系统的机器。</p>
+<p>2、创建用户组</p>
+<p>server 2008对用户组和用户的管理比较严格，而且我们作为一个ftp服务器，肯定涉及到非常多的用户，单独使用用户来管理工作量非常大而且不显示，所以这里我们首先创建一个用户组ftpGroup。</p>
+<p>a、点击开始-&gt;管理工具-&gt;服务器管理器 （Windows10 是控制面板-》程序里）</p>
+<p>打开启动或关闭Windows功能</p>
+<p><img src="https://pic.imgdb.cn/item/613ebaf344eaada739a20f83.png"></p>
+<p>b. 勾选ftp服务、扩展还有IIS管理控制台</p>
+<p>c. 打开“IIS管理器”后，在左栏的“网站”上点击右键，打开“添加FTP站点”</p>
+<p><img src="https://pic.imgdb.cn/item/613ebbd244eaada739a33b2d.png"></p>
+<p>注意站点名称不要包含中文,其他没有要求。</p>
+<p>物理路径选定本地文件夹。（由于我是虚拟机，这里没有其他分区，所以才是c盘，大家可以根据自己的电脑进行更改即可）</p>
+<p><img src="https://pic.imgdb.cn/item/613ebc0944eaada739a383c8.png"></p>
+<p>没有SSL证书，直接选择无</p>
+<p><img src="https://pic.imgdb.cn/item/613ebc2b44eaada739a3b37d.png"></p>
+<p>身份验证选择基本</p>
+<p>授权选择指定角色或用户组</p>
+<p>ftpGroup （这里使用我们第一步创建的ftp分组）</p>
+<p>权限（读写权限)</p>
+<p><img src="https://pic.imgdb.cn/item/613ebc5044eaada739a3e627.png"></p>
+<p>3、设置目录权限</p>
+<p>找到磁盘文件,右键-&gt;属性</p>
+<p><img src="https://pic.imgdb.cn/item/613ebc9a44eaada739a4509e.png"></p>
+<p>切换到安全标签，点击编辑</p>
+<p><img src="https://pic.imgdb.cn/item/613ebcf544eaada739a4c9fc.png"></p>
+<p>点击添加-&gt;输入组名称ftpGroup-&gt;检查-&gt;确定</p>
+<p>4、重启服务器（可选）</p>
+<p>由于涉及用户组的变更，可能需要重启后才能生效。建议重启服务器后再测试连接。</p>
+<p>否则可能导致无法连接ftp服务器。</p>
+<p>5、连接验证</p>
+<p>a、本机浏览器验证</p>
+<p><img src="https://pic.imgdb.cn/item/613ebd3844eaada739a54374.png"></p>
+<p>设置“身份验证和授权信息”</p>
+<p>然后在浏览器地址栏中输入“ftp://填写的IP”测试一下</p>
+<p><img src="https://pic.imgdb.cn/item/613ebd6244eaada739a5852b.png"></p>
+<p>设置“绑定和SSL设置”，在“IP地址”处，可以用内网IP也可以用外网IP，访客自然也就根据你的IP设定来决定;</p>
+<p>查看服务器ip地址比如：192.168.128.140</p>
+<p>使用局域网内其他电脑访问<a href="ftp://192.168.128.140/">ftp://192.168.128.140</a></p>
+<p><img src="https://pic.imgdb.cn/item/613ebe2f44eaada739a6883c.png"></p>
+<p>设置主机为192.168.128.140</p>
+<p>设置协议为FTP</p>
+<p>输入用户名和密码</p>
+<p><img src="https://pic.imgdb.cn/item/613ebe5d44eaada739a6bfb6.png"></p>
+<p>切换到选项卡，设置编码为GBK （如果使用默认的Unicode上传会导致上传的中文名称文件乱码）</p>
+<p>至此，我们的FTP服务器搭建就完全完成了。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">Hanson Zhou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2021/09/13/FTP%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/">http://example.com/2021/09/13/FTP%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/09/10/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E4%B9%8Brequests%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">接口测试之requests测试用例</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Hanson Zhou</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">19</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">9</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/09/13/FTP%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" title="FTP工具搭建"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FTP工具搭建"/></a><div class="content"><a class="title" href="/2021/09/13/FTP%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/" title="FTP工具搭建">FTP工具搭建</a><time datetime="2021-09-13T02:33:04.000Z" title="Created 2021-09-13 10:33:04">2021-09-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/09/10/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E4%B9%8Brequests%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B/" title="接口测试之requests测试用例"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="接口测试之requests测试用例"/></a><div class="content"><a class="title" href="/2021/09/10/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E4%B9%8Brequests%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B/" title="接口测试之requests测试用例">接口测试之requests测试用例</a><time datetime="2021-09-10T08:01:59.000Z" title="Created 2021-09-10 16:01:59">2021-09-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/09/09/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95JMeter/" title="接口测试JMeter"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="接口测试JMeter"/></a><div class="content"><a class="title" href="/2021/09/09/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95JMeter/" title="接口测试JMeter">接口测试JMeter</a><time datetime="2021-09-09T09:51:19.000Z" title="Created 2021-09-09 17:51:19">2021-09-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/09/08/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E6%A6%82%E5%BF%B5/" title="接口测试概念"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="接口测试概念"/></a><div class="content"><a class="title" href="/2021/09/08/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E6%A6%82%E5%BF%B5/" title="接口测试概念">接口测试概念</a><time datetime="2021-09-08T07:52:14.000Z" title="Created 2021-09-08 15:52:14">2021-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/09/07/Webdriver%E7%9A%84%E6%A6%82%E5%BF%B5/" title="Webdriver的概念"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Webdriver的概念"/></a><div class="content"><a class="title" href="/2021/09/07/Webdriver%E7%9A%84%E6%A6%82%E5%BF%B5/" title="Webdriver的概念">Webdriver的概念</a><time datetime="2021-09-07T09:53:13.000Z" title="Created 2021-09-07 17:53:13">2021-09-07</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Hanson Zhou</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
